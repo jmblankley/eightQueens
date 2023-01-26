@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 #define SIZE 8
-#define EMPTY '*'
+#define EMPTY ' '
 
 char board[SIZE][SIZE];
 
@@ -48,8 +48,44 @@ void printBoard()
     }
     printBorder();
 }
-void solveBoard()
+
+bool canPlace(int inRow, int inCol)
 {
+    // check my row
+    for (int c = 0; c < inCol; c++)
+    {
+        // is there a queen in the position we are checking?
+        if (board[inRow][c] == 'Q')
+        {
+            return false;
+        }
+    }
+
+    // check upper left diagonal
+
+    // check my lower left diagonal
+    return true;
+}
+
+void solveBoard(int colForNextQueen)
+{
+    // if you've gotten beyond right edge of board, you've placed a queen in every other column, so you have solved the problem.
+    if (colForNextQueen >= SIZE)
+    {
+        return;
+    }
+    // try every row in this column
+    for (int r = 0; r < SIZE; r++)
+    {
+        if (canPlace(r, colForNextQueen))
+        {
+            // put a queen here!
+            board[r][colForNextQueen] = 'Q';
+
+            // if so, try next columm...
+            solveBoard(colForNextQueen + 1);
+        }
+    }
 }
 
 int main(int argc, char *argv[])
@@ -57,7 +93,7 @@ int main(int argc, char *argv[])
     initBoard();
     cout << "The unsolved board is:" << endl;
     printBoard();
-    solveBoard();
+    solveBoard(0);
     cout << "The solved board is:" << endl;
     printBoard();
 
